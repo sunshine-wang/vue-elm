@@ -135,18 +135,18 @@
 						</div>
 						<div class="index-line2">
 							<div>
-								<svg></svg>
+								<img :src="icons[0].stars" alt="">
 							</div>
 							<span>4.7</span>
 							<span>月售1016单</span>
 						</div>
-						<div class="index line3">
-							<div>
+						<div class="index-line3">
+							<div class="index-moneylimted">
 								<span>0元起送</span>
 								<span>配送费9元</span>
 							</div>
-							<div>
-								<span>473m</span>
+							<div class="index-timed">
+								<span class="index-distance">473m</span>
 								<span>38分钟</span>
 							</div>
 						</div>
@@ -208,6 +208,11 @@
 						journey:618,
 						time:20,
 						activityList:['新用户立减20元','本店新用户立减2元','下单返回5元代金券']
+					}
+				],
+				icons:[
+					{
+						stars:'../static/images/stars.svg'
 					}
 				]
 			}
@@ -340,15 +345,40 @@
 			}
 			.container-main{
 				padding-left:.173333rem;
+				flex-grow:1;
 				.index-line1,.index-line2,.index-line3{
 					display: flex;
 				}	
+				.index-line2 {
+					img{
+						width:112px;
+					}
+					span{
+						padding-left:8px;
+					}
+				}
+				.index-line3{
+					.index-moneylimted span+span:before{
+						content:'|';
+						color:#ddd;
+						margin:0 .08rem;
+					}
+					.index-timed{
+						flex-grow:1;
+						text-align:right;
+						.index-distance:after{
+							content:'|';
+							color:#ddd;
+							margin:0 .08rem;
+						}
+					}
+				}
 				h3,p{
 					margin:0;
 				}
 				p{
-					position:absolute;
-					right:.2rem;
+					flex-grow:1;
+					text-align:right;
 				}
 			}
 		}
