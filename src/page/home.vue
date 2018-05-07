@@ -219,12 +219,41 @@
 		},
 		methods:{
 			getData:function(){
-				  fetch('/api/posts/1')  //填写路径即可
+				  //fetch('/v1/topics',{  //填写路径即可
+				  fetch('/restapi/bgs/poi/reverse_geo_coding?latitude=30.312773&longitude=120.066788',{
+				  	method: 'GET'
+				  })
 				  .then(function(response) {
 				  	console.log(response);
 				    //return response.json()
+				  })
+				  .then((res)=>{
+				    console.log(res)
 				  });	
 				}
+
+
+			 /*getData:function(){  
+                        this.$http.get('/api/v1')
+                        .then(function(res){  
+                            alert(res.data);  
+                              
+                        },function(res){  
+                            alert(res.status)  
+                        });  
+                    }*/
+
+
+            /*getData:function(){
+            	axios.get('/api/reverse_geo_coding?latitude=30.312773&longitude=120.066788')
+			  .then(function (response) {
+			    console.log(response);
+			  })
+			  .catch(function (response) {
+			    console.log(response);
+			  });
+			}*/
+
 		}
 	}
 	///api/restapi/bgs/poi/reverse_geo_coding?latitude=30.282636&longitude=120.098679

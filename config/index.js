@@ -2,7 +2,8 @@
 // Template version: 1.3.1
 // see http://vuejs-templates.github.io/webpack for documentation.
 
-const path = require('path')
+const path = require('path');
+//var proxyConfig = require('./proxyConfig')
 
 module.exports = {
   dev: {
@@ -10,11 +11,38 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    //proxyTable:proxyConfig.proxyList,
+    /*proxyTable: {
+        '/api':{
+            target:'http://jsonplaceholder.typicode.com',
+            //target:'https://h5.ele.me/api',
+            changeOrign:true,
+            secure: false,
+            pathRewrite: {
+              '^/api': ''
+            }
+        }
+    },*/
+    /*proxyTable: {
+        '/v1/**': {
+            target: 'https://cnodejs.org/api', // 你接口的域名
+            secure: false,
+            changeOrigin: false,  //这个false的时候对的
+        }
+    },*/
 
+    proxyTable: {
+        '/restapi/**': {
+            //target: 'https://h5.ele.me', // 你接口的域名
+            target:'https://h5.ele.me',
+            secure: false,
+            changeOrigin: true,  //但是这个true是才取得数据，不明白
+        }
+    },
+    
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
-    port: 8080, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
+    port: 8000, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
     autoOpenBrowser: false,
     errorOverlay: true,
     notifyOnErrors: true,
@@ -42,7 +70,6 @@ module.exports = {
 
     cssSourceMap: true
   },
-
   build: {
     // Template for index.html
     index: path.resolve(__dirname, '../dist/index.html'),
