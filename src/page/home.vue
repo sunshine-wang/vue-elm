@@ -1,9 +1,9 @@
 <template>
-	<div class="wrapper" v-on:click="getData">
+	<div class="wrapper">
 		<header>
 			<div>
 				<i></i>
-				<span>西湖区</span>
+				<span>{{localAddress}}</span>
 				<i class="drop-down"></i>
 			</div>
 		</header>
@@ -119,7 +119,8 @@
 			</section>
 		</div>
 		<div class="shoplist-title">推荐商家</div>
-		<section class="shoplist">
+		<shop-list></shop-list>
+		<!-- <section class="shoplist">
 			<section class="shoplist-item">
 				<div class="shiplist-item-info">
 					<div class="container-logo">
@@ -169,15 +170,18 @@
 					</div>
 				</div>
 			</section>
-		</section>
+		</section> -->
 	</div>
 </template>
 
 <script>
+import shopList from '../components/common/shoplist'
+
 	export default{
 		name:'index',
 		data (){
 			return {
+				localAddress:'',
 				banner:['../static/images/banner1.webp','../static/images/banner2.webp'],
 				foodentry:{
 					food:'../static/images/food.webp',
@@ -217,46 +221,62 @@
 				]
 			}
 		},
+		components:{
+			shopList,
+		},
+		mounted:function(){
+			if(navigator.geolocation){
+				let that = this;
+				let latitude = that.$store.state.latitude;
+				let longitude = that.$store.state.longitude;
+				navigator.geolocation.getCurrentPosition(function(position){
+					console.log(position);
+					that.getData(position.coords.latitude,position.coords.longitude);
+				},function(error){
+					console.log(error);
+					if(latitude == ''){
+						that.$router.push('/set-address');
+					}
+					else{
+						that.getData(latitude,longitude);
+						that.getTypesList(latitude,latitude);
+					}
+				})
+			}
+		},
 		methods:{
-			getData:function(){
-				  //fetch('/v1/topics',{  //填写路径即可
-				  fetch('/restapi/bgs/poi/reverse_geo_coding?latitude=30.312773&longitude=120.066788',{
+			getData:function(latitude,longitude){
+				let that = this;
+				  fetch('/restapi/bgs/poi/reverse_geo_coding?latitude='+ latitude +'&longitude='+longitude,{
+				  //fetch('/restapi/bgs/poi/reverse_geo_coding?latitude=30.312773&longitude=120.066788',{
 				  	method: 'GET'
 				  })
 				  .then(function(response) {
-				  	console.log(response);
-				    //return response.json()
+				  	response.json().then(function(data){
+				  		that.localAddress = data.name;
+				  		console.log(that.localAddress);
+				  	})
 				  })
-				  .then((res)=>{
-				    console.log(res)
+				  .catch(function(error){
+				  	console.log(error);
 				  });	
-				}
-
-
-			 /*getData:function(){  
-                        this.$http.get('/api/v1')
-                        .then(function(res){  
-                            alert(res.data);  
-                              
-                        },function(res){  
-                            alert(res.status)  
-                        });  
-                    }*/
-
-
-            /*getData:function(){
-            	axios.get('/api/reverse_geo_coding?latitude=30.312773&longitude=120.066788')
-			  .then(function (response) {
-			    console.log(response);
-			  })
-			  .catch(function (response) {
-			    console.log(response);
-			  });
-			}*/
-
+				},
+			getTypesList:function(latitude,longitude){
+				fetch('/restapi/shopping/v3/restaurants?latitude='+ latitude +'&longitude='+ longitude +'&offset=0&limit=8&extras[]=activities&extras[]=tags&extra_filters=home&rank_id=&terminal=h5',{
+					method:'GET',
+				})
+				.then(function(response){
+					response.json().then(function(data){
+						console.log(data);
+					})
+				})
+				.catch(function(error){
+					console.log(error);
+				})
+			}
+			
 		}
 	}
-	///api/restapi/bgs/poi/reverse_geo_coding?latitude=30.282636&longitude=120.098679
 </script>
 
 <style scoped lang="less">

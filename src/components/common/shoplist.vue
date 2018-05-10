@@ -1,176 +1,55 @@
 <template>
-	<div class="wrapper" v-on:click="getData">
-		<header>
-			<div>
-				<i></i>
-				<span>西湖区</span>
-				<i class="drop-down"></i>
-			</div>
-		</header>
-		<div class="search-wrapper">
-			<div class="button">
-				<a href="">
-					<i></i>
-					<span>搜索饿了吗商家、商品名称</span>
-				</a>
-			</div>
-		</div>
-		<div class="mint-swipe toptoons">
-			<div class="mint-swipe-items-wrap">
-				<div class="mint-swipe-items">
-					<section class="toptoon">
-						<img :src = banner[0] alt="">
-					</section>
+	<section class="shoplist">
+		<section class="shoplist-item" v-for="shop in shoplist.items">
+			<div class="shiplist-item-info">
+				<div class="container-logo">
+					<img :src=list[0].url alt="">
 				</div>
-				<div class="mint-swipe-items">
-					<section class="toptoon">
-						<img :src = banner[1] alt="">
-					</section>
-				</div>
-			</div>
-			<div class="mint-swipe-indicators"></div>
-		</div>
-		<div class="mint-swipe foodentry">
-			<div class="mint-swipe-items-wrap">
-				<div class="mint-swipe-items">
-					<section>
-						<a href="">
-							<div class="container">
-								<img :src=foodentry.food alt="">
-							</div>
-							<span>美食</span>
-						</a>
-						<a href="">
-							<div class="container">
-								<img :src=foodentry.lunch alt="">
-							</div>
-							<span>晚餐</span>
-						</a>
-						<a href="">
-							<div class="container">
-								<img :src=foodentry.market alt="">
-							</div>
-							<span>超市便利</span>
-						</a>
-						<a href="">
-							<div class="container">
-								<img :src=foodentry.fruit alt="">
-							</div>
-							<span>水果</span>
-						</a>
-						<a href="">
-							<div class="container">
-								<img :src=foodentry.health alt="">
-							</div>
-							<span>健康</span>
-						</a>
-						<a href="">
-							<div class="container">
-								<img :src=foodentry.sale alt="">
-							</div>
-							<span>大牌5折</span>
-						</a>
-						<a href="">
-							<div class="container">
-								<img :src=foodentry.flower alt="">
-							</div>
-							<span>鮮花</span>
-						</a>
-						<a href="">
-							<div class="container">
-								<img :src=foodentry.spicyHotPot alt="">
-							</div>
-							<span>麻辣燙</span>
-						</a>
-						<a href="">
-							<div class="container">
-								<img :src=foodentry.otherLocation alt="">
-							</div>
-							<span>大方菜系</span>
-						</a>
-						<a href="">
-							<div class="container">
-								<img :src=foodentry.pizza alt="">
-							</div>
-							<span>披薩意麵</span>
-						</a>
-					</section>
-				</div>
-				<div class="mint-swipe-items">
-				</div>
-			</div>
-			<div class="mint-swipe-indicators"></div>
-		</div>
-		<div>
-			<section>
-				<div>
-					<img :src=imgs.userGit alt="">
-				</div>
-			</section>
-			<section class="activity-lego">
-				<div class="lego">
-					<h3>限量抢购</h3>
-					<div>超级美味</div>
-					<div>
-						<span>6986人</span>正在抢>
-					</div>
-					<img :src=imgs.limiteSale alt="">
-				</div>
-			</section>
-		</div>
-		<div class="shoplist-title">推荐商家</div>
-		<section class="shoplist">
-			<section class="shoplist-item">
-				<div class="shiplist-item-info">
-					<div class="container-logo">
-						<img :src=list[0].url alt="">
-					</div>
-					<div class="container-main">
-						<div class="index-line1">
-							<h3>
-								<i></i>
-								<span>{{list[0].name}}</span>
-							</h3>
-							<p>票</p>
-						</div>
-						<div class="index-line2">
-							<div>
-								<img :src="icons[0].stars" alt="">
-							</div>
-							<span>4.7</span>
-							<span>月售1016单</span>
-						</div>
-						<div class="index-line3">
-							<div class="index-moneylimted">
-								<span>0元起送</span>
-								<span>配送费9元</span>
-							</div>
-							<div class="index-timed">
-								<span class="index-distance">473m</span>
-								<span>38分钟</span>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="shoplist-item-activitywrap">
-					<div class="">
-						<div>
+				<div class="container-main">
+					<div class="index-line1">
+						<h3>
 							<i></i>
-							<span>新用户下单立减17元</span>
-						</div>
-						<div>
-							<i></i>
-							<span>满35-12</span>
-						</div>
+							<span>{{shop.restaurant.name}}</span>
+						</h3>
+						<p>票</p>
 					</div>
-					<div>
-						<span>5个活动</span>
-						<i class="drop-down"></i>
+					<div class="index-line2">
+						<div>
+							<img :src="icons[0].stars" alt="">
+						</div>
+						<span>{{shop.restaurant.rating}}</span>
+						<span>月售{{shop.restaurant.recent_order_num}}单</span>
+					</div>
+					<div class="index-line3">
+						<div class="index-moneylimted">
+							<span>{{shop.restaurant.float_minimum_order_amount}}元起送</span>
+							<span>配送费{{shop.restaurant.float_delivery_fee}}元</span>
+						</div>
+						<div class="index-timed">
+							<span class="index-distance">{{shop.restaurant.distance}}m</span>
+							<span>{{shop.restaurant.order_lead_time}}分钟</span>
+						</div>
 					</div>
 				</div>
-			</section>
+			</div>
+			<div class="shoplist-item-activitywrap">
+				<div class="activitylist">
+					<div v-for="activity in shop.restaurant.activities">
+						<i :class="activity.icon_color">{{activity.icon_name}}</i>
+						<span>{{activity.description}}</span>
+					</div>
+					<!-- <div>
+						<i></i>
+						<span>满35-12</span>
+					</div> -->
+				</div>
+				<div class="activity-count">
+					<span>{{shop.restaurant.activities.length}}个活动</span>
+					<i class="drop-down"></i>
+				</div>
+			</div>
 		</section>
-	</div>
+	</section>	
 </template>
 
 <script>
@@ -178,6 +57,7 @@
 		name:'index',
 		data (){
 			return {
+				shoplist:'',
 				banner:['../static/images/banner1.webp','../static/images/banner2.webp'],
 				foodentry:{
 					food:'../static/images/food.webp',
@@ -217,106 +97,33 @@
 				]
 			}
 		},
+		mounted(){
+			this.initData();
+		},
 		methods:{
-			getData:function(){
-				  fetch('/api/posts/1')  //填写路径即可
-				  .then(function(response) {
-				  	console.log(response);
-				    //return response.json()
-				  });	
-				}
+			initData(){
+				this.getShopsList(this.$store.state.latitude,this.$store.state.longitude)
+			},
+			getShopsList:function(latitude,longitude){
+				let that = this;
+				fetch('/restapi/shopping/v3/restaurants?latitude='+ latitude +'&longitude='+ longitude +'&offset=0&limit=8&extras[]=activities&extras[]=tags&extra_filters=home&rank_id=&terminal=h5',{
+					method:'GET'
+				})
+				.then(function(response){
+					response.json().then(function(data){
+						console.log(data);
+						that.shoplist = data;
+					})
+					.catch(function(error){
+						console.log(error);
+					})
+				})
+			}
 		}
 	}
-	///api/restapi/bgs/poi/reverse_geo_coding?latitude=30.282636&longitude=120.098679
 </script>
 
 <style scoped lang="less">
-	header{
-		height:.92rem;
-		padding:.266667rem .373333rem 0 .373333rem;
-		font-size: 34px;
-		text-align:left;
-		background-image: -webkit-linear-gradient(left,#0af,#0085ff);
-		background-image: linear-gradient(90deg,#0af,#0085ff);
-		color: #fff;
-	}
-	.drop-down{
-		width:0;
-		height:0;
-		border:5px solid transparent;
-		border-top: 5px solid #fff;
-		display:inline-block;
-		vertical-align: middle;
-	}
-	.search-wrapper{
-		background-image:linear-gradient(90deg,#0af,#0085ff);
-		padding:.2rem .373333rem;
-	}
-	.button{
-		height:.96rem;
-		font-size:.28rem;
-		text-align: center;
-		line-height:1rem;
-		background-color:#fff;
-		
-	}
-	a{
-		text-decoration:none;
-		color:#999;
-		font-size:28px;
-	}
-	
-	.mint-swipe,.mint-swipe-items-wrap{
-		position: relative;
-		height:100%;
-		overflow: hidden;
-	}
-	.mint-swipe-items{
-		position: absolute;
-		width:100%;
-	}
-	.mint-swipe-items img{
-		width:100%;
-	}
-	.toptoons{
-		height:28vw;
-	}
-	.foodentry{
-		height:47.2vw;
-		font-size: 0;
-	}
-	.foodentry a{
-		display: inline-block;
-		width:20%;
-		padding-top:.29333rem;
-		span{
-				font-size: 24px;
-				color:#666;
-			}
-		}
-	.container{
-		width:12vw;
-		margin:0 auto;
-	}
-	.activity-lego{
-		display: flex;
-		padding:0 .26667rem;
-		.lego{
-			-webkit-flex:1;
-			flex:1;
-			background-color:#f9f9f9;
-			padding:.32rem 0 0 .4rem;
-			text-align:left;
-			height:2.93333rem;
-			box-sizing: border-box;
-			position:relative;
-			img{
-				position:absolute;
-				right:.37333rem;
-				top:.24rem;
-			}
-		}
-	}
 	.shoplist-title{
 		margin-top:.28rem;
 		height:.96rem;
@@ -389,6 +196,27 @@
 				p{
 					flex-grow:1;
 					text-align:right;
+				}
+			}
+		}
+		.shoplist-item-activitywrap{
+			display:flex;
+			padding-left:2.17333rem;
+			.activitylist{
+				flex:1;
+				text-align: left;
+				padding-right:.26667rem;
+				width:5.89rem;
+			}
+			.activity-count{
+				text-align:right;
+				.drop-down{
+					width: 0;
+				    height: 0;
+				    border: 6px solid transparent;
+				    border-top: 6px solid #000;
+				    display: inline-block;
+				    vertical-align: middle;
 				}
 			}
 		}
