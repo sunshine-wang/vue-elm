@@ -1,6 +1,6 @@
 <template>
 	<section class="shoplist">
-		<section class="shoplist-item" v-for="shop in shoplist.items">
+		<section class="shoplist-item" v-for="shop in shoplist.items" data-id="" @click="getShop(shop.restaurant.id)">
 			<div class="shiplist-item-info">
 				<div class="container-logo">
 					<img :src=list[0].url alt="">
@@ -35,7 +35,7 @@
 			<div class="shoplist-item-activitywrap">
 				<div class="activitylist">
 					<div v-for="activity in shop.restaurant.activities">
-						<i :class="activity.icon_color">{{activity.icon_name}}</i>
+						<i :class="activity.icon_color" v-bind:style="{background:activity.icon_color}">{{activity.icon_name}}</i>
 						<span>{{activity.description}}</span>
 					</div>
 					<!-- <div>
@@ -118,6 +118,9 @@
 						console.log(error);
 					})
 				})
+			},
+			getShop(id){
+				this.$store.commit('id',id);
 			}
 		}
 	}
@@ -207,9 +210,12 @@
 				text-align: left;
 				padding-right:.26667rem;
 				width:5.89rem;
+				height: 60px;
+    			overflow: hidden;
 			}
 			.activity-count{
 				text-align:right;
+				height:100%;
 				.drop-down{
 					width: 0;
 				    height: 0;

@@ -14,6 +14,9 @@ export default new Vuex.Store({
 		},
 		longitude(state,arg){
 			state.longitude = arg;
+		},
+		id(state,id){
+			state.id = id;
 		}
 	}
 })
