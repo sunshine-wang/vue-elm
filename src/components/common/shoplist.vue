@@ -57,6 +57,8 @@
 		name:'index',
 		data (){
 			return {
+				latitude:this.$store.state.latitude,
+				longitude:this.$store.state.longitude,
 				shoplist:'',
 				banner:['../static/images/banner1.webp','../static/images/banner2.webp'],
 				foodentry:{
@@ -121,6 +123,7 @@
 			},
 			getShop(id){
 				this.$store.commit('id',id);
+				this.$router.push('/shop-detail/'+ id);
 			}
 		}
 	}

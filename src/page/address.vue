@@ -133,6 +133,7 @@
 		text-align:left;
 		padding:.26667rem .4rem;
 		font-size:.32rem;
+		height:100%;
 		.address-cell-name{
 			font-size:.4rem;
 			color:#333;
