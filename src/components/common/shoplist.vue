@@ -1,9 +1,9 @@
 <template>
 	<section class="shoplist">
-		<section class="shoplist-item" v-for="shop in shoplist.items" data-id="" @click="getShop(shop.restaurant.id)">
+		<section class="shoplist-item" v-for="(shop,index) in shoplist" data-id="" @click="getShop(shop.restaurant.id)">
 			<div class="shiplist-item-info">
 				<div class="container-logo">
-					<img :src=list[0].url alt="">
+					<img :src=getUrl(shop.restaurant)>
 				</div>
 				<div class="container-main">
 					<div class="index-line1">
@@ -34,16 +34,12 @@
 			</div>
 			<div class="shoplist-item-activitywrap">
 				<div class="activitylist">
-					<div v-for="activity in shop.restaurant.activities">
-						<i :class="activity.icon_color" v-bind:style="{background:activity.icon_color}">{{activity.icon_name}}</i>
+					<div v-for="(activity,i) in shop.restaurant.activities" :class="{show_none: i > 1}" class="show_list">
+						<i :class="'color_' + activity.icon_color" class="tip_color">{{activity.icon_name}}</i>
 						<span>{{activity.description}}</span>
 					</div>
-					<!-- <div>
-						<i></i>
-						<span>满35-12</span>
-					</div> -->
 				</div>
-				<div class="activity-count">
+				<div class="activity-count" @click="showAllActivityList(index,$event)">
 					<span>{{shop.restaurant.activities.length}}个活动</span>
 					<i class="drop-down"></i>
 				</div>
@@ -53,68 +49,47 @@
 </template>
 
 <script>
+	import {mapState} from 'vuex'
 	export default{
 		name:'index',
 		data (){
 			return {
-				latitude:this.$store.state.latitude,
-				longitude:this.$store.state.longitude,
-				shoplist:'',
-				banner:['../static/images/banner1.webp','../static/images/banner2.webp'],
-				foodentry:{
-					food:'../static/images/food.webp',
-					lunch:'../static/images/lunch.webp',
-					market:'../static/images/market.webp',
-					fruit:'../static/images/fruit.webp',
-					health:'../static/images/health.webp',
-					sale:'../static/images/sale.webp',
-					flower:'../static/images/flower.webp',
-					spicyHotPot:'../static/images/spicyHotPot.webp',
-					otherLocation:'../static/images/otherLocation.webp',
-					pizza:'../static/images/pizza.webp'
-				},
+				latitude:this.$store.state.latitude ? this.$store.state.latitude:(localStorage.getItem('latitude')?localStorage.getItem('latitude'):null),
+				longitude:this.$store.state.longitude ? this.$store.state.longitude:(localStorage.getItem('longitude')?localStorage.getItem('longitude'):null),
+				shoplist:[],
 				imgs:{
 					userGit:'../static/images/newsUserGift.webp',
 					limiteSale:'../static/images/limiteSale.webp',
 					combo:'../static/images/combo.webp'
 				},
-				list:[
-					{
-						url:'../static/images/list/mdl.webp',
-						isbroad:false,
-						name:'宁波麦当劳鼓楼步行街餐厅',
-						score:'4.6',
-						saleNumber:'213',
-						startMoney:20,
-						carriage:4,
-						journey:618,
-						time:20,
-						activityList:['新用户立减20元','本店新用户立减2元','下单返回5元代金券']
-					}
-				],
 				icons:[
 					{
 						stars:'../static/images/stars.svg'
 					}
-				]
+				],
+				listStart:0,
+				scrollBack : false
 			}
 		},
 		mounted(){
 			this.initData();
+   			window.addEventListener('scroll', this.scrollLoad);
 		},
 		methods:{
 			initData(){
-				this.getShopsList(this.$store.state.latitude,this.$store.state.longitude)
+				//this.getShopsList(this.$store.state.latitude,this.$store.state.longitude,this.listStart);
+				this.getShopsList(this.latitude,this.longitude,this.listStart);
 			},
-			getShopsList:function(latitude,longitude){
+			getShopsList:function(latitude,longitude,start,size){
 				let that = this;
-				fetch('/restapi/shopping/v3/restaurants?latitude='+ latitude +'&longitude='+ longitude +'&offset=0&limit=8&extras[]=activities&extras[]=tags&extra_filters=home&rank_id=&terminal=h5',{
+				fetch('/restapi/shopping/v3/restaurants?latitude='+ latitude +'&longitude='+ longitude +'&offset='+ start +'&limit=8&extras[]=activities&extras[]=tags&extra_filters=home&rank_id=&terminal=h5',{
 					method:'GET'
 				})
 				.then(function(response){
 					response.json().then(function(data){
 						console.log(data);
-						that.shoplist = data;
+						that.shoplist = that.shoplist.concat(data.items);
+						that.scrollBack = true;
 					})
 					.catch(function(error){
 						console.log(error);
@@ -124,12 +99,58 @@
 			getShop(id){
 				this.$store.commit('id',id);
 				this.$router.push('/shop-detail/'+ id);
+			},
+			getUrl(item){
+				let url = item.image_path;
+				return 'https://fuss10.elemecdn.com/'+ url.slice(0,1)+'/'+url.slice(1,3)+'/'+url.slice(3)+'.jpeg?imageMogr/format/webp/thumbnail/!130x130r/gravity/Center/crop/130x130/';
+			},
+			hasClass(element,cname){
+				return !!element.className.match(new RegExp( "(\\s|^)" + cname + "(\\s|$)"));
+			},
+			addClass(element,cname){
+				element.className += ' '+ cname;
+			},
+			removeClass(element,cname){
+				element.className = element.className.replace(new RegExp( "(\\s|^)" + cname + "(\\s|$)" ), " " );
+			},
+			showAllActivityList(index,event){
+				event.stopPropagation();
+				let list = document.querySelectorAll('.shoplist-item-activitywrap')[index].querySelectorAll('.show_list');
+				let that = this;
+				if(list.length <=2){
+					return;
+				}
+				list.forEach(function(item,i){
+					if(i > 1){
+						if(that.hasClass(item,'show_none')){
+							that.removeClass(item,'show_none');
+							console.log(item.className);
+						}else{
+							that.addClass(item,'show_none');
+						}
+					}
+				})
+				
+			},
+			scrollLoad(){
+				if(this.scrollBack){
+					let scrollTop = document.documentElement.scrollTop;
+					let clientHeight = document.documentElement.clientHeight;
+					let totalHeight = document.body.clientHeight;
+					if(scrollTop + clientHeight + 50 > totalHeight){
+						this.listStart += 8;
+						this.scrollBack = false;
+						//this.getShopsList(this.$store.state.latitude,this.$store.state.longitude,this.listStart);
+						this.getShopsList(this.latitude,this.longitude,this.listStart);
+					}
+				}
 			}
 		}
 	}
 </script>
 
 <style scoped lang="less">
+	@import '../../style/common';
 	.shoplist-title{
 		margin-top:.28rem;
 		height:.96rem;
@@ -213,8 +234,34 @@
 				text-align: left;
 				padding-right:.26667rem;
 				width:5.89rem;
-				height: 60px;
     			overflow: hidden;
+    			div{
+				    display: flex;
+				    align-items: center;
+				    span{
+				    	text-overflow: ellipsis;
+				    	overflow:hidden;
+				    	white-space: nowrap;
+				    	display: inline-block;
+    					flex: 1;
+				    }
+    			}
+    			.show_none{
+    				display:none;
+    			}
+    			.tip_color{
+    				color:#fff;
+    				display:inline-block;
+    				width:.7466667rem;
+    				height:.7466667rem;
+    				border-radius: .04rem;
+				    transform: scale(0.5);
+				    font-size: .56rem;
+				    font-style: normal;
+				    display: flex;
+				    flex: none;
+				    justify-content: center;
+    			}
 			}
 			.activity-count{
 				text-align:right;

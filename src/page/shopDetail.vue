@@ -6,7 +6,7 @@
 					<svg viewBox="0 0 20 32" id="arrow-left" width="100%" height="100%"><path fill="#fff" d="M16.552 5.633l-2.044-2.044L2.243 15.854l12.265 12.557 2.044-2.044L6.331 15.854z"></path></svg>
 				</use>
 			</a>
-			<img src="https://fuss10.elemecdn.com/5/90/746c155e09978c377d09f7831ef96jpeg.jpeg?imageMogr/format/webp/thumbnail/!130x130r/gravity/Center/crop/130x130/">
+			<img :src=getUrl(shopDetail) alt="">
 		</header>
 		<div class="shop-content">
 			<div class="shop-name">{{shopDetail.name}}</div>
@@ -19,12 +19,14 @@
 			</div>
 			<div class="shop-des text-ellipsis">{{shopDetail.promotion_info}}</div>
 			<div class="shop-activity">
-				<div class="activity-list text-ellipsis" v-for="activity in shopDetail.activities">
-					<span>{{activity.icon_name}}</span>
-					<span>{{activity.tips}}</span>
+				<div class="all-activity">
+					<div class="activity-list text-ellipsis" v-for="(activity,i) in shopDetail.activities" :class="{show_none: i > 0}">
+						<span>{{activity.icon_name}}</span>
+						<span>{{activity.tips}}</span>
+					</div>
 				</div>
-				<div class="activity-count">
-					<span>个活动</span>
+				<div class="activity-count" @click="showAllActivityList($event)">
+					<span>{{shopDetail.activities.length}}个活动</span>
 					<i></i>
 				</div>
 			</div>
@@ -38,17 +40,13 @@
 			<div class="contianer-food">
 				<ul class="food-typeList">
 					<li v-for="(item,index) in foodDetail" @click="checkType(index)">{{item.name}}</li>
-					<!-- <li>[售]鲜丰推荐</li>
-					<li>单品果切</li>
-					<li>双拼果切</li>
-					<li>三拼果切</li> -->
 				</ul>
 				<div class="food-detailList">
 					<p class="type-title">{{foodDetail[checkNum]?foodDetail[checkNum].name:''}}</p>
 					 <ul v-for="food in foodDetail[checkNum].foods" v-if="foodDetail[checkNum].foods">
 						<li>
 							<div class="food-photo">
-								<img src="https://fuss10.elemecdn.com/7/11/ddf589595964ef74b95e8af81104ajpeg.jpeg?imageMogr/format/webp/thumbnail/!140x140r/gravity/Center/crop/140x140/" alt="">
+								<img :src=getUrl(food) alt="">
 							</div>
 							<div class="food-info">
 								<p class="food-name">{{food.specfoods[0].name}}</p>
@@ -103,7 +101,7 @@
 			},
 			initFoodList(){
 				let that = this;
-				fetch('/restapi/shopping/v1/restaurants/'+ this.id +'/menu/categories',{
+				fetch('/restapi/shopping/v2/menu?restaurant_id='+ this.id,{
 					method:'GET'
 				})
 				.then(function(response){
@@ -118,7 +116,14 @@
 			},
 			checkType(index){
 				this.checkNum = index;
-			}
+			},
+			getUrl(item){
+				let url = item.image_path;
+				return 'https://fuss10.elemecdn.com/'+ url.slice(0,1)+'/'+url.slice(1,3)+'/'+url.slice(3)+'.jpeg?imageMogr/format/webp/thumbnail/!130x130r/gravity/Center/crop/130x130/';
+			},
+			showAllActivityList(event){
+				event.stopPropagation();
+			},
 		}
 	}
 </script>
@@ -175,7 +180,8 @@
 		}
 		.shop-des{
 			padding:.22667rem 1.6933rem .26667rem;
-		    color:#666;
+		    font-size: .29333rem;
+    		color: #999;
 		}
 		.shop-activity{
 			margin:0 .24rem;
@@ -183,15 +189,18 @@
 			font-size:.293333rem;
 			display:flex;
 			color:#666;
-			border:1ps sodli #eee;
-			.activity-list{
+			border:1px solid #eee;
+			.all-activity{
 				flex:1;
+			}
+			.activity-list{
 				text-align: left;
 			}
 			.activity-count{
 				flex-shrink:0;
 				width:1.626667rem;
 				text-align:left;
+				flex:none;
 			}
 		}
 	}
@@ -232,7 +241,7 @@
 			}
 			li{
 				display:flex;
-				padding: 2.666667vw 2.666667vw 2.666667vw 0;
+				padding: 2.666667vw 2.666667vw 2.666667vw 2.6667vw;
 				.food-photo{
 					width:2.0266667rem;
 					height:2.0266667rem;
@@ -241,6 +250,9 @@
 					img{
 						width:100%;
 					}
+				}
+				.food-info{
+					width:100%;
 				}
 				.food-name{
 					margin:0;

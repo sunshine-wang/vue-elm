@@ -1,9 +1,22 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import actions from './action'
+import mutations from './mutation'
 
 Vue.use(Vuex);
 
+const state = {
+	latitude:'',
+	longitude:''
+}
+
 export default new Vuex.Store({
+	state,
+	actions,
+	mutations
+})
+
+/*export default new Vuex.Store({
 	state:{
 		latitude:'',
 		longitude:''
@@ -19,4 +32,4 @@ export default new Vuex.Store({
 			state.id = id;
 		}
 	}
-})
+})*/

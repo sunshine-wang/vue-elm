@@ -16,12 +16,6 @@
 						</p>
 						<p class="address-cell-locate">{{item.address}}</p>
 					</div>
-					<!-- <div class="address-cell">
-						<p class="address-cell-name">
-							<span>西田城购物中心</span>
-						</p>
-						<p class="address-cell-locate">浙江省杭州市余杭区莫干山路1509号</p>
-					</div> -->
 				</section>
 				<div class="address">
 					<div class="title">
@@ -44,6 +38,7 @@
 	</div>
 </template>
 <script>
+import {mapActions} from 'vuex'
 	export default{
 		name:'setAddress',
 		data(){
@@ -52,6 +47,7 @@
 			}
 		},
 		methods:{
+			...mapActions(['setAddress']),
 			showAddress:function(){
 				let that = this;
 				fetch('restapi/bgs/poi/search_poi_nearby_alipay?keyword=西湖区&offset=0&limit=2&latitude=30.34119&longitude=120.095058',{
@@ -83,8 +79,11 @@
 				let that = this;
 				let data = target.dataset;
 				console.log('1'+data.latitude);
-				this.$store.commit('latitude',data.latitude);
-				this.$store.commit('longitude',data.longitude);
+				this.setAddress({longitude:data.longitude,latitude:data.latitude});
+				localStorage.setItem('longitude',data.longitude);
+				localStorage.setItem('latitude',data.latitude);
+				//this.$store.commit('latitude',data.latitude);
+				//this.$store.commit('longitude',data.longitude);
 				that.$router.push('/');
 			}
 		}
